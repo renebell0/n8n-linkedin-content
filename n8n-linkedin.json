@@ -1,0 +1,1137 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        5320,
+        3900
+      ],
+      "id": "97da5566-a054-4856-97b6-b1128027112b",
+      "name": "Merge Original and Detective",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8",
+          "mode": "list",
+          "cachedResultName": "Publicaciones LinkedIn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Published_Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha_Actualizacion": "={{ new Date().toISOString() }}",
+            "Posted_URL": "={{ $json.link }}"
+          },
+          "matchingColumns": [
+            "Posted_URL"
+          ],
+          "schema": [
+            {
+              "id": "Posted_URL",
+              "displayName": "Posted_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha_Actualizacion",
+              "displayName": "Fecha_Actualizacion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        5740,
+        3995.5
+      ],
+      "id": "ceb7038e-946b-426a-9976-a0c2542b6512",
+      "name": "Update Existing Row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NbWGZAWF3s5miGHJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- CONFIGURACIÓN ---\nconst timezone = 'America/Caracas';\n\n// 2. Define las horas (formato 24h) en las que quieres publicar.\nconst postingHours = [9, 12, 17, 15]; // Para 9:00 AM, 12:00 PM, y 5:00 PM\n// --- FIN DE LA CONFIGURACIÓN ---\n\n// Usamos JavaScript nativo para evitar dependencias externas.\nconst now = new Date();\n\n// Obtenemos la hora actual en la zona horaria especificada, en formato de 24 horas.\nconst options = {\n  hour: 'numeric',\n  hour12: false,\n  timeZone: timezone,\n};\n\n// Usamos el formateador de fecha para obtener la hora en formato de 24h.\nconst formatter = new Intl.DateTimeFormat('en-GB', options);\nconst currentHourString = formatter.format(now);\n\n// Convertimos la hora (que viene como texto) a un número.\nconst currentHour = parseInt(currentHourString, 10);\n\n// Comprueba si la hora actual está en nuestra lista de horas para publicar.\nif (postingHours.includes(currentHour)) {\n  // ¡Es hora de publicar! Dejamos que los datos pasen al siguiente nodo.\n  return items;\n}\n\n// Si no es una hora de publicación, detenemos el flujo para esta ejecución.\nreturn null;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3540,
+        4794
+      ],
+      "id": "470c620a-b646-451c-9437-6ea44bed4120",
+      "name": "Filtro De Horario1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        3320,
+        4794
+      ],
+      "id": "c35575a2-c527-4ac9-b4d5-6fe8f70d8624",
+      "name": "Se ejecuta cada hora1"
+    },
+    {
+      "parameters": {
+        "url": "https://www.freecodecamp.org/news/rss/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        3820.5
+      ],
+      "id": "3252858e-3973-4b8d-8267-1d40076eb060",
+      "name": "codecamp1"
+    },
+    {
+      "parameters": {
+        "url": "https://css-tricks.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        4394
+      ],
+      "id": "e348dba5-aa85-4315-aa71-31b4aa9899bb",
+      "name": "tricks1"
+    },
+    {
+      "parameters": {
+        "url": "https://web.dev/feed.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        4794
+      ],
+      "id": "bfa5f1c7-1513-46eb-bf15-89bc2a725307",
+      "name": "webdev1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 10
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4200,
+        3600
+      ],
+      "id": "e0dd51d9-29e4-4222-a0b5-d721bb97b859",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- CÓDIGO CORREGIDO Y VERIFICADO ---\n\n// Este nodo recibe una lista donde cada artículo ahora tiene la propiedad 'Last_Source'.\n// El nodo Merge2 se ha encargado de añadirla a cada uno.\nconst items = $input.all();\n\n// Obtenemos la última fuente usada desde el primer artículo de la lista.\n// Si es la primera ejecución, podría no existir, lo cual está bien.\nconst lastSource = items[0].json.Last_Source;\n\n// Función para extraer el dominio de una URL.\nconst getSourceFromUrl = (url) => {\n  try {\n    // Retorna null si la URL es inválida para evitar errores.\n    if (!url) return null;\n    return new URL(url).hostname.replace('www.', '');\n  } catch (e) {\n    return null;\n  }\n};\n\nconst priorityItems = [];\nconst otherItems = [];\n\n// Clasifica los artículos en dos listas: prioritarios y el resto.\nfor (const item of items) {\n  const itemSource = getSourceFromUrl(item.json.link);\n  \n  if (itemSource && itemSource !== lastSource) {\n    priorityItems.push(item);\n  } else {\n    otherItems.push(item);\n  }\n}\n\n// Función para ordenar las listas por fecha (el más nuevo primero).\nconst sortByDate = (a, b) => {\n    // Comprobación de seguridad para fechas inválidas\n    const dateA = new Date(a.json.isoDate || a.json.pubDate);\n    const dateB = new Date(b.json.isoDate || b.json.pubDate);\n    if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) return 0;\n    return dateB - dateA;\n};\n\n// Ordena ambas listas por fecha.\npriorityItems.sort(sortByDate);\notherItems.sort(sortByDate);\n\n// Devuelve la lista final y priorizada, lista para el siguiente paso.\nreturn [...priorityItems, ...otherItems];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4640,
+        3895.5
+      ],
+      "id": "8099d248-2e05-4c8f-a665-15c00fd9881d",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8",
+          "mode": "list",
+          "cachedResultName": "Post Blog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1416833863,
+          "mode": "list",
+          "cachedResultName": "Memory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit#gid=1416833863"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A1:A2"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3760,
+        4794
+      ],
+      "id": "c5a52cdd-cad2-4e85-b993-d8363bb71eb9",
+      "name": "Google Sheets3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NbWGZAWF3s5miGHJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4860,
+        3895.5
+      ],
+      "id": "1fb773c7-2a2f-4d7d-829e-4b7c5820117f",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8",
+          "mode": "list",
+          "cachedResultName": "Post Blog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Published_Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Posted_URL",
+              "lookupValue": "={{ $json.link }}"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically",
+              "readRowsUntil": "firstEmptyRow"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        5100,
+        3800
+      ],
+      "id": "82e17008-889d-49c0-8c76-6243f122b0cd",
+      "name": "Detective1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NbWGZAWF3s5miGHJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db813cc8-40e7-4678-a346-59ca5322092e",
+              "leftValue": "={{ $json.link }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5520,
+        3895.5
+      ],
+      "id": "f20532ed-cbfa-475e-bd1e-6184f568548b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        5740,
+        3795.5
+      ],
+      "id": "64ea31d4-70ec-49c7-bed2-b966410d30cc",
+      "name": "Merge6"
+    },
+    {
+      "parameters": {
+        "url": "https://www.smashingmagazine.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        5594
+      ],
+      "id": "d0ceed1a-e052-4d6e-a2a9-88fccc254f09",
+      "name": "RSS Read7"
+    },
+    {
+      "parameters": {
+        "url": "https://alistapart.com/main/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        5794
+      ],
+      "id": "9f9213d7-ca7e-40aa-bfeb-7112c0437433",
+      "name": "RSS Read8"
+    },
+    {
+      "parameters": {
+        "person": "FgNnDmLW1s",
+        "text": "={{ $json.postParaLinkedIn }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        7280,
+        3760
+      ],
+      "id": "f70baa81-b2e4-49bd-9270-31314d66ce39",
+      "name": "LinkedIn1",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "LT8MoLq3Wl1E3x85",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4420,
+        3895.5
+      ],
+      "id": "9234f263-051d-4828-b42a-35eee87dfef9",
+      "name": "Merge7"
+    },
+    {
+      "parameters": {
+        "url": "https://www.sitepoint.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        5194
+      ],
+      "id": "16822c76-4bfe-4eb4-9263-a5b9ec6eebe0",
+      "name": "RSS Read9"
+    },
+    {
+      "parameters": {
+        "url": "https://hackernoon.com/feed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        5394
+      ],
+      "id": "d8353156-471b-48dd-8a41-2218ebe5b939",
+      "name": "RSS Read10"
+    },
+    {
+      "parameters": {
+        "url": "https://aws.amazon.com/blogs/architecture/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        4594
+      ],
+      "id": "5a34b628-46d3-4762-bf23-38ea07c68e2f",
+      "name": "RSS Read11"
+    },
+    {
+      "parameters": {
+        "url": "https://web.dev/feed.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        4194
+      ],
+      "id": "7bff329c-99bc-4bc7-ab5b-540c71cd015a",
+      "name": "RSS Read12"
+    },
+    {
+      "parameters": {
+        "url": "https://www.theverge.com/rss/index.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        4994
+      ],
+      "id": "61da4dc2-b41f-40a6-ad04-397799c3e302",
+      "name": "RSS Read13"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8",
+          "mode": "list",
+          "cachedResultName": "Publicaciones LinkedIn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1416833863,
+          "mode": "list",
+          "cachedResultName": "Memory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit#gid=1416833863"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Last_Source": "={{ $('Merge8').item.json.link }}"
+          },
+          "matchingColumns": [
+            "Last_Source"
+          ],
+          "schema": [
+            {
+              "id": "Last_Source",
+              "displayName": "Last_Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        7500,
+        3895.5
+      ],
+      "id": "f19e238a-70c6-43b3-9a87-8b7bb8413f52",
+      "name": "Google Sheets4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NbWGZAWF3s5miGHJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8",
+          "mode": "list",
+          "cachedResultName": "Publicaciones LinkedIn",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Published_Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18oUOE4Zxr8Z83ybk8MJ4d4F-Y9M5ooTXmk3yIv-jkd8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Posted_URL": "={{ $('Merge8').item.json.link }}"
+          },
+          "matchingColumns": [
+            "Posted_URL"
+          ],
+          "schema": [
+            {
+              "id": "Posted_URL",
+              "displayName": "Posted_URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        7720,
+        3895.5
+      ],
+      "id": "3b4c91a9-644f-4777-ac2e-244af64cdd1d",
+      "name": "Google Sheets5",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NbWGZAWF3s5miGHJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        7940,
+        3895.5
+      ],
+      "id": "692e2cca-ddd7-41cd-a32f-df755a0bc428",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5960,
+        3720.5
+      ],
+      "id": "4101c7b8-a970-4000-b7c6-9f5713de1302",
+      "name": "Lector1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.apiPayload }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6620,
+        3720.5
+      ],
+      "id": "8c06116b-c5a3-48f9-963f-7f614b25ff46",
+      "name": "Cerebro1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "n6rUyYGWbZP87EbS",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6840,
+        3795.5
+      ],
+      "id": "d9e16a77-c8ac-458f-8ac7-4ba725ce4b38",
+      "name": "Merge8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        7500,
+        3695.5
+      ],
+      "id": "f0248917-ed56-4d87-b337-7291dab116c7",
+      "name": "No Operation, do nothing3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- CONFIGURACIÓN AVANZADA ---\nconst LINKEDIN_MAX_CHARS = 2900; // Límite seguro para posts de LinkedIn\n\n// Mapeo de palabras clave a emojis para dar un toque de personalidad\nconst emojiMap = {\n    'ia': '🤖',\n    'inteligencia artificial': '🤖',\n    'código': '💻',\n    'desarrollo': '🚀',\n    'seguridad': '🔒',\n    'futuro': '🔮',\n    'lanzamiento': '🚀',\n    'noticia': '📰',\n    'guía': '🗺️',\n    'tutorial': '🧑‍🏫',\n    'linkedin': '💼'\n};\nconst defaultEmoji = '💡'; // Emoji por defecto\n\n// --- FUNCIONES AUXILIARES ---\n\n/**\n * Formatea un bloque de texto en párrafos más pequeños y legibles,\n * respetando los párrafos originales de la IA.\n * @param {string} text - El cuerpo del post.\n * @returns {string} - El texto formateado con saltos de línea.\n */\nfunction formatBodyForLinkedIn(text) {\n    // Primero, dividimos el texto en los párrafos que la IA ya creó.\n    const originalParagraphs = text.split('\\n').filter(p => p.trim() !== '');\n    \n    const finalParagraphs = [];\n    const MAX_PARAGRAPH_LENGTH = 450; // Límite de caracteres para un párrafo antes de dividirlo.\n\n    originalParagraphs.forEach(p => {\n        // Si un párrafo es demasiado largo, lo dividimos. Si no, lo dejamos como está.\n        if (p.length > MAX_PARAGRAPH_LENGTH) {\n            const sentences = p.match(/[^.!?]+[.!?]+/g) || [p];\n            let newSubParagraph = \"\";\n            for (const sentence of sentences) {\n                newSubParagraph += sentence.trim() + \" \";\n                // Creamos un sub-párrafo cuando alcanza una longitud razonable.\n                if (newSubParagraph.length > 200) {\n                    finalParagraphs.push(newSubParagraph.trim());\n                    newSubParagraph = \"\";\n                }\n            }\n            if (newSubParagraph.trim()) {\n                finalParagraphs.push(newSubParagraph.trim());\n            }\n        } else {\n            finalParagraphs.push(p.trim());\n        }\n    });\n    \n    // Unimos todos los párrafos finales con el espaciado correcto para LinkedIn.\n    return finalParagraphs.join('\\n\\n');\n}\n\n\n// --- LÓGICA PRINCIPAL DEL NODO ---\n\nconst item = $input.item;\nlet postFinal = \"\";\n\ntry {\n    // 1. Extraer y parsear la respuesta de la IA de forma segura\n    let rawText = item.json.candidates[0].content.parts[0].text;\n    const jsonMatch = rawText.match(/\\{[\\s\\S]*\\}/);\n    if (!jsonMatch) {\n        throw new Error(\"No se encontró un objeto JSON válido en la respuesta de la IA.\");\n    }\n    // IMPORTANTE: No eliminamos los saltos de línea (\\n) aquí para preservar los párrafos.\n    let jsonString = jsonMatch[0]; \n    const iaResponse = JSON.parse(jsonString);\n\n    // 2. Validar que la respuesta de la IA tiene todo lo necesario\n    if (!iaResponse.titulo || !iaResponse.cuerpo || !iaResponse.hashtags) {\n        throw new Error(\"La respuesta de la IA no contiene todos los campos necesarios (titulo, cuerpo, hashtags).\");\n    }\n\n    // 3. Formatear los Hashtags (Primera letra en mayúscula)\n    const hashtagsString = iaResponse.hashtags\n        .map(tag => `#${tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase()}`)\n        .join(' ');\n\n    // 4. Añadir Emojis Inteligentes al título\n    let titulo = iaResponse.titulo;\n    let emojiAdded = false;\n    for (const keyword in emojiMap) {\n        if (titulo.toLowerCase().includes(keyword) || iaResponse.cuerpo.toLowerCase().includes(keyword)) {\n            titulo = `${emojiMap[keyword]} ${titulo}`;\n            emojiAdded = true;\n            break;\n        }\n    }\n    if (!emojiAdded) {\n        titulo = `${defaultEmoji} ${titulo}`;\n    }\n\n    // 5. Formatear el cuerpo del post con espaciado inteligente\n    const formattedBody = formatBodyForLinkedIn(iaResponse.cuerpo);\n\n    // 6. Ensamblar el post completo\n    postFinal = `${titulo}\\n\\n${formattedBody}\\n\\n${hashtagsString}`;\n\n    // 7. Control de Longitud para LinkedIn\n    if (postFinal.length > LINKEDIN_MAX_CHARS) {\n        const espacioFinal = postFinal.lastIndexOf(' ', LINKEDIN_MAX_CHARS - 50);\n        postFinal = postFinal.substring(0, espacioFinal > 0 ? espacioFinal : LINKEDIN_MAX_CHARS - 50) + `...`;\n    }\n\n} catch (error) {\n    // --- LÓGICA DE RESPALDO (FALLBACK) ---\n    console.error(\"FALLBACK ACTIVADO: No se pudo procesar la respuesta de la IA. Se generará una publicación de respaldo.\", error.message);\n    \n    const originalTitle = item.json.title || \"un artículo interesante\";\n    const originalLink = item.json.link;\n\n    if (originalLink) {\n        postFinal = `Les comparto un artículo muy interesante sobre \"${originalTitle}\". ¡No se lo pierdan! 👇\\n\\n${originalLink}`;\n    } else {\n        return null;\n    }\n}\n\n// 8. Añadir el post final al item para que el siguiente nodo lo use\nitem.json.postParaLinkedIn = postFinal;\n\nreturn item;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7060,
+        3780
+      ],
+      "id": "077846d4-f923-45ed-99b6-1ff15d010cc9",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Obtener el texto ya limpio del nodo anterior (\"Limpiar HTML\")\nconst cleanedContent = $input.item.json.cleanedText;\n\n// 2. Construir el nuevo prompt. Nota que ya no le pedimos que limpie el HTML.\nconst promptText = `Actúa como un desarrollador web senior y un excelente comunicador en LinkedIn. Has extraído el texto de un artículo, pero no debes mencionarlo. Tu tarea es realizar las siguientes acciones en orden:\n\n1. **Traduce si es necesario:** Si el texto está en inglés, tradúcelo completamente al español manteniendo el contexto técnico.\n\n2. **Crea la publicación:** Basándote en el contenido, escribe una publicación original, interesante y profesional para LinkedIn. No te limites a resumir; añade una breve reflexión personal o una pregunta para generar debate. La redacción debe ser natural y humana.\n\n3. **Genera un título:** Crea un título corto y muy llamativo para la publicación.\n\n4. **Genera hashtags:** Genera exactamente 5 hashtags de una sola palabra, en español, que sean altamente relevantes para el contenido del artículo. No incluyas el símbolo #.\n\n5. **El cuerpo del post debe tener una longitud óptima de entre 1500 y 2000 caracteres para maximizar el engagement.**\n\nRESPONDE ÚNICAMENTE con un objeto JSON válido, sin texto adicional antes o después. La estructura debe ser:\n{ \"titulo\": \"Tu título aquí\", \"cuerpo\": \"El cuerpo de tu publicación aquí\", \"hashtags\": [\"tag1\", \"tag2\", \"tag3\", \"tag4\", \"tag5\"] }\n\nAquí está el texto del artículo:\n\n${cleanedContent}`;\n\n// 3. Construir el payload para la API de Gemini\nconst payload = {\n  contents: [\n    {\n      parts: [\n        {\n          text: promptText,\n        }\n      ]\n    }\n  ]\n};\n\n// 4. Devolver el payload para que el nodo \"Cerebro1\" lo envíe\nreturn {\n  json: {\n    apiPayload: payload\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6400,
+        3720.5
+      ],
+      "id": "4925848f-b3b0-4da6-83a9-4d89ed96ac3f",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- CONFIGURACIÓN ---\n// Límite máximo de caracteres para enviar a la IA. \n// Esto previene errores de \"payload too large\" o \"model overloaded\".\n// Gemini 1.5 Flash tiene un contexto enorme, pero las peticiones muy grandes\n// pueden fallar. 30,000 caracteres es un límite seguro para el contenido de un artículo.\nconst MAX_LENGTH = 30000;\n// --- FIN DE LA CONFIGURACIÓN ---\n\nconst html = $input.item.json.data;\n\n// 1. Expresión regular para quitar todas las etiquetas HTML y el contenido de <script> y <style>\nlet plainText = html\n  .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, \"\")\n  .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, \"\")\n  .replace(/<[^>]*>/g, ' ');\n\n// 2. Reemplaza múltiples espacios, saltos de línea y tabulaciones por un solo espacio\nlet cleanedText = plainText.replace(/\\s\\s+/g, ' ').trim();\n\n// 3. Recortar el texto si excede el límite máximo para no sobrecargar el modelo\nif (cleanedText.length > MAX_LENGTH) {\n  console.log(`Texto original excedía el límite. Recortando de ${cleanedText.length} a ${MAX_LENGTH} caracteres.`);\n  cleanedText = cleanedText.substring(0, MAX_LENGTH);\n}\n\n// 4. Pasa el texto limpio y posiblemente recortado al siguiente nodo\n$input.item.json.cleanedText = cleanedText;\n\nreturn $input.item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6180,
+        3720.5
+      ],
+      "id": "25e5076d-4fa1-4376-9f52-59c74b6e2609",
+      "name": "Code1"
+    }
+  ],
+  "connections": {
+    "Merge Original and Detective": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro De Horario1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Se ejecuta cada hora1": {
+      "main": [
+        [
+          {
+            "node": "Filtro De Horario1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "codecamp1": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tricks1": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "webdev1": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets3": {
+      "main": [
+        [
+          {
+            "node": "tricks1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "webdev1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "codecamp1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "RSS Read9",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read10",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read11",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read12",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Merge Original and Detective",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Detective1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detective1": {
+      "main": [
+        [
+          {
+            "node": "Merge Original and Detective",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Existing Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge6": {
+      "main": [
+        [
+          {
+            "node": "Lector1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "RSS Read7": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "RSS Read8": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "LinkedIn1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge7": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read9": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "RSS Read10": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "RSS Read11": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "RSS Read12": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 8
+          }
+        ]
+      ]
+    },
+    "RSS Read13": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 9
+          }
+        ]
+      ]
+    },
+    "Google Sheets4": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets5": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lector1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cerebro1": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge8": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Cerebro1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9945426a6b1f5aaba23e37680d3e73f6c9c346813fc33f95a926206417aca631"
+  }
+}
